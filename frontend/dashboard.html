@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
@@ -83,7 +84,22 @@
   			</div>
   		</div>
   	</div>
+
+    <div class="col">
+    <div class="col-md">
+      <div class="card text-center text-white  mb-3" id="orders-delivered">
+          <div class="card-header">
+            <h5 class="card-title">Out for Delivery</h5>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title od"></h3>
+          </div>
+      </div>
+    </div>
   </div>
+  </div>
+
+
 
   <br>
 
@@ -122,7 +138,7 @@
 					<th>Product</th>
 					<th>Date Orderd</th>
 					<th>Status</th>
-					<th>Update</th>
+					<!-- <th>Update</th> -->
 					<th>Remove</th>
 				</tr>
 
@@ -150,9 +166,10 @@
 <script>
 
   $('document').ready(function(){
+
     $.get('http://127.0.0.1:8000/api/customer?format=json',function(result){
       $.each(result, function(data, value){
-        console.log(value.id);
+
         $('.custtable').append(
           '<tr>'+
           '<td><a id="'+value.id+'" class="btn btn-sm btn-info" href="customerdetail.html?id='+value.id+'">View</a></td>' +
@@ -170,6 +187,7 @@
 
       var delivered=0;
       var pending=0;
+      var od=0
 
       $.each(result, function(data, value){
         if(value.status=='Pending'){
@@ -177,19 +195,23 @@
         }else if (value.status=='Delivered') {
           delivered += 1;
         }
+        else{
+          od += 1;
+        }
         $('.ordertbl').append(
           '<tr>'+
           '<td>'+value.customer_name+'</td>'+
           '<td>'+value.product_name+'</td>' +
           '<td>'+value.date_created+'</td>' +
           '<td>'+value.status+'</td>' +
-          '<td><a class="btn btn-sm btn-info" href="">Update</a></td>' +
+          // '<td><a class="btn btn-sm btn-info" href="">Update</a></td>' +
           '<td><a class="btn btn-sm btn-danger" href="orderdelete.html?id='+value.order_id+'">Delete</a></td>'
         )
       })
 
       document.getElementsByClassName('delivered')[0].innerHTML = delivered;
       document.getElementsByClassName('pending')[0].innerHTML = pending;
+      document.getElementsByClassName('od')[0].innerHTML = od;
 
     })
 

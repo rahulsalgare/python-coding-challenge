@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
 
   </head>
@@ -58,29 +60,48 @@
 </div>
 <br>
 
-<!-- <div class="col-sm-12">
-  <div class="card">
-    <div class="card-body">
-      <form method="get">
-        {{myfilter.form}}
-        <a class="btn btn-primary btn-info" type="submit">Search</a>
-      </form>
-    </div>
-  </div>
-</div> -->
-
 <div class="row">
   <div class="col-sm-12">
     <h5>CART</h5>
     <div class="card">
       <div class="card-body">
+        <h6>Add to Cart</h6>
+        <form id="addtocart" method="post">
+          <div class="row">
+            <input list="availableproductlist" class="addtocart"/>
+            <datalist id="availableproductlist">
+            </datalist>
+
+            <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+
+              <input class="btn btn-primary" type="submit" value="Add">
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <h6>Orders</h6>
         <table class="table table-sm cart">
           <tr>
 					<th>Product</th>
 					<!-- <th>Note</th> -->
 					<th>Date Orderd</th>
 					<th>Status</th>
-					<th>Update</th>
 					<th>Remove</th>
 				</tr>
 
@@ -105,6 +126,7 @@
 
 <script>
   $(document).ready(function(){
+     $('.js-example-basic-multiple').select2();
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     // console.log(id);
@@ -123,13 +145,57 @@
           '<td>'+ result.orders[i].product_name + '</td>' +
           '<td>'+ result.orders[i].date_created + '</td>' +
           '<td>'+ result.orders[i].status + '</td>' +
-          '<td><a class="btn btn-sm btn-info" href="">Update</a></td>' +
-          '<td><a class="btn btn-sm btn-danger" href="">Delete</a></td>'
+          // '<td><a class="btn btn-sm btn-info" href="">Update</a></td>' +
+          '<td><a class="btn btn-sm btn-danger" href="orderdelete.html?id='+result.orders[i].order_id+'">Delete</a></td>'
         )
       }
     })
 
+    $.get('http://127.0.0.1:8000/api/available_products', function(result){
+      $.each(result, function(data, value){
+        console.log(value.name);
+        $('#availableproductlist').append(
+          ' <option value="'+value.name+'(id='+value.id+')"</option>'
+        )
+      })
+
+    })
+
+    $('#addtocart').submit(function(evt){
+      evt.preventDefault();
+
+
+      // extract product id from string
+      try{
+        var prodid = $('.addtocart').val().match(/\d+/)[0]
+      }
+      catch(err){
+        console.log("error"+ err.message);
+      }
+      var status = $('#status').val()
+      console.log(status);
+
+      var cart = {
+        customer_id: id,
+        product_id: prodid,
+        status: status
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:8000/api/cart/',
+        data: cart,
+        success: function(response){
+          console.log(response);
+          location.reload();
+        }
+      });
+
+    })
+
   })
+
+
 </script>
 
   </body>

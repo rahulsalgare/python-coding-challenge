@@ -26,6 +26,17 @@ class Customer(models.Model):
     def get_full_name(self):
         return self.first_name + " "+ self.last_initial
 
+# Manager to get the products that are available to order/to add in cart.
+class AvailabeProductsManager(models.Manager):
+    def all(self):
+        available = []
+        for pr in Product.objects.all():
+            try:
+                pr.status
+            except:
+                available.append(pr)
+        return available
+
 class Product(models.Model):
     class Meta:
         ordering = ['-date_created']
@@ -34,6 +45,9 @@ class Product(models.Model):
     description = models.CharField(max_length=50)
     price = models.FloatField(null=True)
     date_created = models.DateTimeField(auto_now_add=True, null= True)
+
+    objects = models.Manager()
+    available_products = AvailabeProductsManager()
 
 
     # manufacturing_date = models.DateField()
@@ -46,8 +60,8 @@ class Product(models.Model):
     #
     # barcode = models.ImageField(upload_to="barcodes/", blank=True)
     #
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
     #
     # def save(self, *args, **kwargs):
     #     EAN = barcode.get_barcode_class('ean13')
@@ -67,7 +81,7 @@ class Cart(models.Model):
         ('Delivered','Delivered'),
     ]
     customer = models.ForeignKey(Customer,null=True,related_name="orders",on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True,on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, null=True,related_name="status", on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, null= True)
     status = models.CharField(max_length=200,null=True,choices=STATUS)
 

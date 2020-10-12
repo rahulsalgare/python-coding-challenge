@@ -55,11 +55,11 @@
             </tr>
             <tr>
               <td><label for="linit">Last Initial</label></td>
-              <td><input type="text" id="linit"></td>
+              <td><input type="text" id="linit"maxlength="1"></td>
             </tr>
             <tr>
               <td><label for="phone">Phone</label></td>
-              <td><input type="number" id="phone"></td>
+              <td><input type="text" id="phone"></td>
             </tr>
             <tr>
               <td><label for="email">Email</label></td>
@@ -71,6 +71,8 @@
           </div>
         </form>
 
+        <p id="message"></p>
+
       </div>
     </div>
   </div>
@@ -80,8 +82,6 @@
   $('#addcustomer').submit(function (evt) {
     evt.preventDefault();
     // window.history.back();
-        console.log("not submit");
-
 
     var customer = {
       first_name: $('#fname').val(),
@@ -95,7 +95,12 @@
       url: 'http://127.0.0.1:8000/api/customer/',
       data: customer,
       success: function(response){
+        console.log(response);
         window.location = "dashboard.html";
+      },
+      error: function(response){
+        console.log(response.responseJSON.phone);
+        document.getElementById('message').innerHTML = response.responseText;
       }
     });
 

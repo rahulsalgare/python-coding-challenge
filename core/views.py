@@ -6,6 +6,13 @@ from rest_framework.generics import UpdateAPIView
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import status
+from django.http import HttpResponse
+
+@api_view(['GET'])
+def available_product_list(request):
+    products = Product.available_products.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
