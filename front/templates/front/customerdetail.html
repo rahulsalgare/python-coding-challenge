@@ -94,6 +94,7 @@
 <script>
   $(document).ready(function(){
 
+//  Get only available products and show it in dropdown
     $.get('http://127.0.0.1:8000/api/available_products', function(result){
       $.each(result, function(data, value){
         console.log(value.name);

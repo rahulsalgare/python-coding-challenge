@@ -10,6 +10,9 @@ from django.http import HttpResponse
 
 @api_view(['GET'])
 def available_product_list(request):
+    """
+    Get only available products which are not already present in the cart of other customers.
+    """
     products = Product.available_products.all()
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
