@@ -21,7 +21,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         if self.instance is not None:
-            print("updating")
+            pass                                                                             
         else:
             print(self.validated_data)
             cust= Customer.objects.get(id=self.validated_data['customer']['id'])
@@ -34,8 +34,6 @@ class CartSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
     orders = CartSerializer(many=True, read_only=True)
-    # orders = serializers.StringRelatedField(many=True)
-    # orders = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Customer

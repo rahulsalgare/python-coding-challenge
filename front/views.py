@@ -17,7 +17,6 @@ def products(request):
 def customerdetail(request,pk):
     response = requests.get("http://127.0.0.1:8000/api/customer/"+ pk)
     data = response.json()
-    print(data)
     return render(request, 'front/customerdetail.html',{"data":data})
 
 def createcustomer(request):

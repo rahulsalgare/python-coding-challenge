@@ -73,8 +73,8 @@
     {% for cst in data %}
       <tr>
         <td><a id="" class="btn btn-sm btn-info" href="{% url 'front:customerdetail' cst.id %}">View</a></td>
-        <td>{{cst.first_name}} {{cst.last_initial}}</td>
-        <td>{{cst.phone}}</td>
+        <td>{{ cst.first_name }} {{ cst.last_initial }}</td>
+        <td>{{ cst.phone }}</td>
         <td></td>
       </tr>
     {% endfor %}
@@ -98,10 +98,10 @@
 
       {% for order in orders %}
         <tr>
-          <td>{{order.customer_name}}</td>
-          <td>{{order.product_name}}</td>
-          <td>{{order.date_created}}</td>
-          <td>{{order.status}}</td>
+          <td>{{ order.customer_name }}</td>
+          <td>{{ order.product_name }}</td>
+          <td>{{ order.date_created }}</td>
+          <td>{{ order.status }}</td>
           <td><a class="btn btn-sm btn-danger" href="{% url 'front:orderdelete' order.order_id%}">Delete</a></td>
 
         </tr>

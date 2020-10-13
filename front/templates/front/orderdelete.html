@@ -11,7 +11,7 @@
   $('.delete').click(function(){
     $.ajax({
       type: 'DELETE',
-      url: 'http://127.0.0.1:8000/api/cart/'+{{pk}},
+      url: 'http://127.0.0.1:8000/api/cart/'+{{ pk }},
       success: function(response){
         window.location = "/"
       }

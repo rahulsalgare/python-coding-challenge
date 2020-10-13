@@ -9,15 +9,15 @@
         <table>
           <tr>
             <td><h5>Name:</h5></td>
-            <td><h5 id="custname" class="card-title">{{data.first_name}} {{data.last_initial}}</h5></td>
+            <td><h5 id="custname" class="card-title">{{ data.first_name }} {{ data.last_initial }}</h5></td>
           </tr>
           <tr>
             <td><h5>Phone:</h5></td>
-            <td><h5 id="custphone" class="card-title">{{data.phone}}</h5></td>
+            <td><h5 id="custphone" class="card-title">{{ data.phone }}</h5></td>
           </tr>
           <tr>
             <td><h5>Email:</h5></td>
-            <td><h5 id="custemail" class="card-title">{{data.email}}</h5></td>
+            <td><h5 id="custemail" class="card-title">{{ data.email }}</h5></td>
           </tr>
         </table>
         <div>
@@ -76,10 +76,10 @@
 
         {% for order in data.orders %}
           <tr>
-            <td>{{order.product_name}}</td>
-            <td>{{order.date_created}}</td>
-            <td>{{order.status}}</td>
-            <td><a class="btn btn-sm btn-danger delord" data-setid="{{order.order_id}}">Delete</a></td>
+            <td>{{ order.product_name }}</td>
+            <td>{{ order.date_created }}</td>
+            <td>{{ order.status }}</td>
+            <td><a class="btn btn-sm btn-danger delord" data-setid="{{ order.order_id }}">Delete</a></td>
           </tr>
         {% endfor %}
       </table>
@@ -116,7 +116,7 @@
       var status = $('#status').val()
 
       var cart = {
-        customer_id: {{data.id}},
+        customer_id: {{ data.id }},
         product_id: prodid,
         status: status
       };
@@ -144,7 +144,7 @@
     })
 
     $('.delcst').click(function(){
-      var cstid = {{data.id}}
+      var cstid = {{ data.id }}
         $.ajax({
         type: 'DELETE',
         url: 'http://127.0.0.1:8000/api/customer/'+cstid+'/',

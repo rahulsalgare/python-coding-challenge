@@ -8,13 +8,11 @@ from django.core.files import File
 from phonenumber_field.modelfields import PhoneNumberField
 
 class Customer(models.Model):
-    # user = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
     class Meta:
         ordering = ['-date_created']
 
     first_name = models.CharField(max_length=200)
     last_initial = models.CharField(max_length=1)
-    # phone = models.CharField(max_length=200, null=True)
     phone = PhoneNumberField(unique=True)
     email = models.EmailField(max_length=200, null=True, unique=True)
     date_created = models.DateTimeField (auto_now_add=True, null=True)
@@ -26,7 +24,7 @@ class Customer(models.Model):
     def get_full_name(self):
         return self.first_name + " "+ self.last_initial
 
-# Manager to get the products that are available to order/to add in cart.
+# Manager to get the products that are available to order/to add in cart.(products which dont have relationship with cart)
 class AvailabeProductsManager(models.Manager):
     def all(self):
         available = []
@@ -38,9 +36,6 @@ class AvailabeProductsManager(models.Manager):
         return available
 
 class Product(models.Model):
-    class Meta:
-        ordering = ['-date_created']
-
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50)
     price = models.FloatField(null=True)
@@ -49,6 +44,8 @@ class Product(models.Model):
     objects = models.Manager()
     available_products = AvailabeProductsManager()
 
+    class Meta:
+        ordering = ['-date_created']
 
     # manufacturing_date = models.DateField()
     # expiry_date = models.DateField()
