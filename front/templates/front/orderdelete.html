@@ -1,0 +1,22 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<p>Are you sure you want to delete order <span id="deleteproduct"></span> ?</p>
+<a href="{% url 'front:home' %}">cancel</a>
+<button class="btn btn-danger delete">Delete</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $('.delete').click(function(){
+    $.ajax({
+      type: 'DELETE',
+      url: 'http://127.0.0.1:8000/api/cart/'+{{pk}},
+      success: function(response){
+        window.location = "/"
+      }
+    })
+  })
+
+</script>
+{% endblock %}

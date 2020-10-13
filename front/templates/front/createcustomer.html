@@ -1,0 +1,63 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-5">
+    <div class="card">
+      <div class="card-body">
+        <form id="addcustomer" method="post">
+          <table class="table table-sm">
+            <tr>
+              <td><label for="fname">First Name</label></td>
+              <td><input type="text" id="fname"></td>
+            </tr>
+            <tr>
+              <td><label for="linit">Last Initial</label></td>
+              <td><input type="text" id="linit"maxlength="1"></td>
+            </tr>
+            <tr>
+              <td><label for="phone">Phone</label></td>
+              <td><input type="text" id="phone"></td>
+            </tr>
+            <tr>
+              <td><label for="email">Email</label></td>
+              <td><input type="email" id="email"></td>
+            </tr>
+          </table>
+          <div class="d-flex justify-content-left mt-3 login_container">
+          <input class="btn btn-primary" type="submit" value="Add">
+          </div>
+        </form>
+
+        <p id="message"></p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $('#addcustomer').submit(function (evt) {
+    evt.preventDefault();
+  
+    var customer = {
+      first_name: $('#fname').val(),
+      last_initial: $('#linit').val(),
+      phone: $('#phone').val(),
+      email: $('#email').val()
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://127.0.0.1:8000/api/customer/',
+      data: customer,
+      success: function(response){
+        console.log(response);
+        window.location = "/";
+      },
+      error: function(response){
+        console.log(response.responseJSON.phone);
+        document.getElementById('message').innerHTML = response.responseText;
+      }
+    });
+});
+</script>
+
+{% endblock %}

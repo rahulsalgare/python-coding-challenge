@@ -6,7 +6,6 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
-        # fields = ['id','name','description','country_id','manufacture_id','product_id','barcode']
         fields = ['id','name','description','price']
 
 class CartSerializer(serializers.ModelSerializer):
@@ -19,8 +18,6 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['order_id','customer_id','customer_name','product_id','product_name','date_created','status']
-        # serializer_choice_field = 'status'
-        # fields = "__all__"
 
     def save(self, **kwargs):
         if self.instance is not None:

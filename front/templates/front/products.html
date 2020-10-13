@@ -1,0 +1,100 @@
+{%  extends 'front/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md">
+    <div class="card card-body">
+      <h5>Products</h5>
+    </div>
+    <div class="card card-body">
+      <table class="table prodtable">
+        <tr>
+          <th>Product</th>
+          <th>Description</th>
+          <th>Price</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5">
+    <div class="card card-body">
+      <h5 class="card-title">Add New Product</h5>
+      <form id="productform" method="post">
+        <table class="table table-sm">
+          <tr>
+            <td><label for="name">Name</label></td>
+            <td><input type="text" id="prname"></td>
+          </tr>
+          <tr>
+            <td><label for="description">Description</label></td>
+            <td><input type="text" id="prdesc"></td>
+          </tr>
+          <tr>
+            <td><label for="price">price</label></td>
+            <td><input type="number" step="0.01" id="prprice"></td>
+          </tr>
+        </table>
+        <div class="d-flex justify-content-left mt-3 login_container">
+        <input class="btn btn-primary" type="submit" value="Add">
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+  $('document').ready(function(){
+    $.get('http://127.0.0.1:8000/api/product',function(result){
+      $.each(result, function(data, value){
+        $('.prodtable').append(
+          '<tr>'+
+          '<td>'+ value.name + '</td>' +
+          '<td>' + value.description + '</td>' +
+          '<td>' + value.price + '</td>' +
+          '</tr>'
+        )
+      })
+    })
+
+  })
+
+  $('#productform').submit(function (evt) {
+
+    evt.preventDefault();
+    var $name = $('#prname');
+    var $description = $('#prdesc');
+    var $price = $('#prprice');
+
+    var product = {
+      name: $name.val(),
+      description: $description.val(),
+      price: $price.val()
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://127.0.0.1:8000/api/product/',
+      data: product,
+      success: function(response){
+        $(
+            '<tr>'+
+            '<td>'+ response.name + '</td>' +
+            '<td>' + response.description + '</td>' +
+            '<td>' + response.price + '</td>' +
+            '</tr>').insertAfter('.prodtable tr:first');
+      }
+    });
+
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+<br>
+<div class="row">
+  <div class="col-sm-5">
+    <div class="card">
+      <div class="card-body customerdetails">
+        <table>
+          <tr>
+            <td><h5>Name:</h5></td>
+            <td><h5 id="custname" class="card-title">{{data.first_name}} {{data.last_initial}}</h5></td>
+          </tr>
+          <tr>
+            <td><h5>Phone:</h5></td>
+            <td><h5 id="custphone" class="card-title">{{data.phone}}</h5></td>
+          </tr>
+          <tr>
+            <td><h5>Email:</h5></td>
+            <td><h5 id="custemail" class="card-title">{{data.email}}</h5></td>
+          </tr>
+        </table>
+        <div>
+          <td><a class="btn btn-sm btn-danger delcst">Delete</a></td>
+        </div>
+
+      </div>
+      </div>
+  </div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h5>CART</h5>
+    <div class="card">
+      <div class="card-body">
+        <h6>Add to Cart</h6>
+        <form id="addtocart" method="post">
+          <div class="row">
+            <input list="availableproductlist" class="addtocart"/>
+            <datalist id="availableproductlist">
+            </datalist>
+
+            <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+
+              <input class="btn btn-primary" type="submit" value="Add">
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <h6>Orders</h6>
+        <table class="table table-sm cart">
+          <tr>
+					<th>Product</th>
+				  <th>Date Orderd</th>
+					<th>Status</th>
+					<th>Remove</th>
+				</tr>
+
+        {% for order in data.orders %}
+          <tr>
+            <td>{{order.product_name}}</td>
+            <td>{{order.date_created}}</td>
+            <td>{{order.status}}</td>
+            <td><a class="btn btn-sm btn-danger delord" data-setid="{{order.order_id}}">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function(){
+
+    $.get('http://127.0.0.1:8000/api/available_products', function(result){
+      $.each(result, function(data, value){
+        console.log(value.name);
+        $('#availableproductlist').append(
+          ' <option value="'+value.name+'(id='+value.id+')"</option>'
+        )
+      })
+    })
+
+    $('#addtocart').submit(function(evt){
+      evt.preventDefault();
+
+      // extract product id from string
+      try{
+        var prodid = $('.addtocart').val().match(/\d+/)[0]
+      }
+      catch(err){
+        console.log("error"+ err.message);
+      }
+      var status = $('#status').val()
+
+      var cart = {
+        customer_id: {{data.id}},
+        product_id: prodid,
+        status: status
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:8000/api/cart/',
+        data: cart,
+        success: function(response){
+          location.reload();
+        }
+      });
+
+    })
+
+    $('.delord').click(function(){
+      var ordid = $(this).attr("data-setid");
+      $.ajax({
+        type: 'DELETE',
+        url: 'http://127.0.0.1:8000/api/cart/'+ordid,
+        success: function(response){
+          location.reload();
+        }
+      })
+    })
+
+    $('.delcst').click(function(){
+      var cstid = {{data.id}}
+        $.ajax({
+        type: 'DELETE',
+        url: 'http://127.0.0.1:8000/api/customer/'+cstid+'/',
+        success: function(response){
+          window:location = "/"
+        }
+      })
+    })
+
+  })
+
+</script>
+
+{% endblock %}
