@@ -28,7 +28,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get','post','delete'], detail=True, url_path='cart', url_name='customercart')
     def cart(self, request, pk=None):
-        customer = Customer.objects.get(id=pk)
+        customer = get_object_or_404(Customer, pk=pk)
 
         if request.method == 'GET':
             customcart = customer.orders.all()
@@ -47,6 +47,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
             ord = get_object_or_404(Cart, pk=ordid)
             self.perform_destroy(ord)
             return Response({'Success':'Order Deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serialier.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CartViewSet(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
