@@ -74,7 +74,7 @@
 					<th>Remove</th>
 				</tr>
 
-        {% for order in data.orders %}
+        {% for order in cart %}
           <tr>
             <td>{{ order.product_name }}</td>
             <td>{{ order.date_created }}</td>
@@ -93,6 +93,7 @@
 {% block scripts %}
 <script>
   $(document).ready(function(){
+    const csrftoken = Cookies.get('csrftoken');
 
 //  Get only available products and show it in dropdown
     $.get('http://127.0.0.1:8000/api/available_products', function(result){
@@ -117,15 +118,16 @@
       var status = $('#status').val()
 
       var cart = {
-        customer_id: {{ data.id }},
         product_id: prodid,
-        status: status
+        status: status,
       };
 
       $.ajax({
+        headers: {'X-CSRFToken': csrftoken},
         type: 'POST',
-        url: 'http://127.0.0.1:8000/api/cart/',
+        url: 'http://127.0.0.1:8000/api/customer/'+ {{ data.id }} +'/cart/',
         data: cart,
+        dataType: 'json',
         success: function(response){
           location.reload();
         }
@@ -136,8 +138,9 @@
     $('.delord').click(function(){
       var ordid = $(this).attr("data-setid");
       $.ajax({
+        headers: {'X-CSRFToken': csrftoken},
         type: 'DELETE',
-        url: 'http://127.0.0.1:8000/api/cart/'+ordid,
+        url: 'http://127.0.0.1:8000/api/customer/'+ {{ data.id }} +'/cart/?order_id='+ordid,
         success: function(response){
           location.reload();
         }
@@ -147,6 +150,7 @@
     $('.delcst').click(function(){
       var cstid = {{ data.id }}
         $.ajax({
+        headers: {'X-CSRFToken': csrftoken},
         type: 'DELETE',
         url: 'http://127.0.0.1:8000/api/customer/'+cstid+'/',
         success: function(response){

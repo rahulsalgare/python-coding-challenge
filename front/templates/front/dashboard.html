@@ -102,7 +102,7 @@
           <td>{{ order.product_name }}</td>
           <td>{{ order.date_created }}</td>
           <td>{{ order.status }}</td>
-          <td><a class="btn btn-sm btn-danger" href="{% url 'front:orderdelete' order.order_id%}">Delete</a></td>
+          <td><a class="btn btn-sm btn-danger" href="{% url 'front:orderdelete' order.customer_id order.order_id%}">Delete</a></td>
 
         </tr>
       {% endfor %}

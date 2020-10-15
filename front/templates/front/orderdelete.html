@@ -8,10 +8,13 @@
 
 {% block scripts %}
 <script>
+  const csrftoken = Cookies.get('csrftoken');
+
   $('.delete').click(function(){
     $.ajax({
+      headers: {'X-CSRFToken': csrftoken},
       type: 'DELETE',
-      url: 'http://127.0.0.1:8000/api/cart/'+{{ pk }},
+      url: 'http://127.0.0.1:8000/api/customer/'+ {{ customer }} +'/?order_id='+{{ order }},
       success: function(response){
         window.location = "/"
       }

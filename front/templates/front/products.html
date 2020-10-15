@@ -13,6 +13,14 @@
           <th>Description</th>
           <th>Price</th>
         </tr>
+        {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>&#8377 {{ product.price }}</td>
+            <td><a class="btn btn-sm btn-danger delprd" data-setid= {{ product.id }}>Delete</a></td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
   </div>
@@ -49,23 +57,9 @@
 
 {% block scripts %}
 <script>
+  const csrftoken = Cookies.get('csrftoken');
 
-  $('document').ready(function(){
-    $.get('http://127.0.0.1:8000/api/product',function(result){
-      $.each(result, function(data, value){
-        $('.prodtable').append(
-          '<tr>'+
-          '<td>'+ value.name + '</td>' +
-          '<td>' + value.description + '</td>' +
-          '<td>' + value.price + '</td>' +
-          '</tr>'
-        )
-      })
-    })
-
-  })
-
-  $('#productform').submit(function (evt) {
+  $('#productform').submit(function(evt) {
 
     evt.preventDefault();
     var $name = $('#prname');
@@ -79,20 +73,26 @@
     };
 
     $.ajax({
+      headers: {'X-CSRFToken': csrftoken},
       type: 'POST',
       url: 'http://127.0.0.1:8000/api/product/',
       data: product,
       success: function(response){
-        $(
-            '<tr>'+
-            '<td>'+ response.name + '</td>' +
-            '<td>' + response.description + '</td>' +
-            '<td>' + response.price + '</td>' +
-            '</tr>').insertAfter('.prodtable tr:first');
+        location.reload();
       }
     });
+});
 
-
+$('.delprd').click(function(){
+  var ordid = $(this).attr("data-setid");
+  $.ajax({
+    headers: {'X-CSRFToken': csrftoken},
+    type: 'DELETE',
+    url: 'http://127.0.0.1:8000/api/product/'+ ordid +'/',
+    success: function(response){
+      location.reload();
+    }
+  })
 });
 
 </script>

@@ -35,6 +35,8 @@
 
 {% block scripts %}
 <script>
+  const csrftoken = Cookies.get('csrftoken');
+
   $('#addcustomer').submit(function (evt) {
     evt.preventDefault();
 
@@ -46,6 +48,7 @@
     };
 
     $.ajax({
+      headers: {'X-CSRFToken': csrftoken},
       type: 'POST',
       url: 'http://127.0.0.1:8000/api/customer/',
       data: customer,
